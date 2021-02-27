@@ -12,8 +12,9 @@ const r = new Snoowrap({
     clientSecret: process.env.CLIENT_SECRET,
     username: process.env.REDDIT_USER,
     password: process.env.REDDIT_PASS,
-    requestDelay: 500
 });
+
+r.config({ requestDelay: 500 })
 
 async function writeToExcel(comment, re, ignore) {
     if (comment.body.includes('$')) {
