@@ -10,4 +10,13 @@ REDDIT_USER=UsernameForAppAccount
 REDDIT_PASS=PasswordForAppAccount
 ```
 
-Run with `node app.js`.
+Run with `node app.js`. You can add more subreddits by copy/pasting this code (and editing appropriately):
+
+```javascript
+const streamOne = new CommentStream(r, { subreddit: "wallstreetbets", results: 25 });
+streamOne.on("item", comment => {
+    writeToExcel(comment, re, ignore);
+})
+```
+
+I made this in about an hour and am not well versed in Reddit's rate limits so... keep that in mind.
