@@ -14,7 +14,7 @@ const r = new Snoowrap({
     password: process.env.REDDIT_PASS,
 });
 
-r.config({ requestDelay: 500 })
+r.config({ requestDelay: 300 })
 
 async function writeToExcel(comment, re, ignore) {
     if (comment.body.includes('$')) {
@@ -38,7 +38,7 @@ async function writeToExcel(comment, re, ignore) {
                         row.commit();
                     };
                     written = false;
-                    return workbook.xlsx.writeFile('tickers.xlsx')
+                    workbook.xlsx.writeFile('tickers.xlsx').catch((err) => console.log(err))
                 }).then(() => console.log('Writing Data'));
             }
         }
