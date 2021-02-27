@@ -1,0 +1,21 @@
+{
+  "name": "reddit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "csv-parse": "^4.15.3",
+    "csv-stringify": "^5.6.2",
+    "dotenv": "^8.2.0",
+    "exceljs": "^4.2.0",
+    "node-csv": "^0.1.2",
+    "snoostorm": "^1.5.2",
+    "snoowrap": "^1.22.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
