@@ -38,7 +38,7 @@ async function writeToExcel(comment, re, ignore) {
                         row.commit();
                     };
                     written = false;
-                    workbook.xlsx.writeFile('tickers.xlsx').catch((err) => console.log(err))
+                    return workbook.xlsx.writeFile('tickers.xlsx')
                 }).then(() => console.log('Writing Data'));
             }
         }
