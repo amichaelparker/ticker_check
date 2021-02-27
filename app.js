@@ -7,14 +7,15 @@ const Snoostorm = require('snoostorm');
 const { CommentStream } = require("snoostorm");
 
 const r = new Snoowrap({
-    userAgent: 'some-description',
+    userAgent: 'learning bot',
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     username: process.env.REDDIT_USER,
-    password: process.env.REDDIT_PASS
+    password: process.env.REDDIT_PASS,
+    requestDelay: 500
 });
 
-const writeToExcel = (comment, re, ignore) => {
+async function writeToExcel(comment, re, ignore) {
     if (comment.body.includes('$')) {
         if (comment.body.match(re) !== null) {
             for (const item in comment.body.match(re)) {
@@ -69,13 +70,18 @@ const tickerCheck = () => {
     excelCheck();
 
     const streamOne = new CommentStream(r, { subreddit: "wallstreetbets", results: 25 });
-    streamOne.on("item", comment => {
-        writeToExcel(comment, re, ignore);
+    streamOne.on("item", async (comment) => {
+        await writeToExcel(comment, re, ignore);
     })
 
     const streamTwo = new CommentStream(r, { subreddit: "RobinHoodPennyStocks", results: 25 });
-    streamTwo.on("item", comment => {
-        writeToExcel(comment, re, ignore);
+    streamTwo.on("item", async (comment) => {
+        await writeToExcel(comment, re, ignore);
+    })
+
+    const streamThree = new CommentStream(r, { subreddit: "PennyStocks", results: 25 });
+    streamThree.on("item", async (comment) => {
+        await writeToExcel(comment, re, ignore);
     })
 }
 
