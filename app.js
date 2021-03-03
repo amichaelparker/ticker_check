@@ -15,30 +15,34 @@ const client = new Snoowrap({
   password: process.env.REDDIT_PASS,
 });
 
+async function addRow(comment, re, item) {
+  const worksheet = workbook.getWorksheet(1);
+  let written = false;
+  worksheet.eachRow({ includeEmpty: true }, (row) => {
+    if (row.getCell(1).value === comment.body.match(re)[item]) {
+      row.getCell(2).value += 1;
+      row.commit();
+      written = true;
+    }
+  });
+  if (!written) {
+    let lastRow = worksheet.getRow(worksheet.rowCount + 1);
+    lastRow.getCell(1).value = comment.body.match(re)[item];
+    lastRow.getCell(2).value = 1;
+    lastRow.commit();
+  }
+  written = false;
+  return workbook.xlsx.writeFile("tickers.xlsx");
+}
+
 const writeToExcel = (comment, re) => {
   if (comment.body.includes("$") && comment.body.match(re) !== null) {
     for (const item in comment.body.match(re)) {
       if (!tickers.includes(comment.body.match(re)[item])) return;
       workbook.xlsx
         .readFile("tickers.xlsx")
-        .then(() => {
-          const worksheet = workbook.getWorksheet(1);
-          let written = false;
-          worksheet.eachRow({ includeEmpty: true }, (row) => {
-            if (row.getCell(1).value === comment.body.match(re)[item]) {
-              row.getCell(2).value += 1;
-              row.commit();
-              written = true;
-            }
-          });
-          if (!written) {
-            let lastRow = worksheet.getRow(worksheet.rowCount + 1);
-            lastRow.getCell(1).value = comment.body.match(re)[item];
-            lastRow.getCell(2).value = 1;
-            lastRow.commit();
-          }
-          written = false;
-          return workbook.xlsx.writeFile("tickers.xlsx");
+        .then(async () => {
+          await addRow(comment, re, item)
         })
         .then(() => console.log("Data Written"));
     }
