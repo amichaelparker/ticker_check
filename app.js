@@ -3,7 +3,7 @@ const Excel = require('exceljs');
 const workbook = new Excel.Workbook();
 require('dotenv').config();
 const Snoowrap = require('snoowrap');
-const Snoostorm = require('snoostorm');
+require('snoostorm');
 const { CommentStream } = require("snoostorm");
 
 const r = new Snoowrap({
@@ -17,30 +17,28 @@ const r = new Snoowrap({
 r.config({ requestDelay: 3000 })
 
 async function writeToExcel(comment, re, ignore) {
-    if (comment.body.includes('$')) {
-        if (comment.body.match(re) !== null) {
-            for (const item in comment.body.match(re)) {
-                if (ignore.indexOf(comment.body.match(re)[item]) !== -1) return;
-                workbook.xlsx.readFile('tickers.xlsx').then(() => {
-                    const worksheet = workbook.getWorksheet(1);
-                    let written;
-                    worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-                        if (row.getCell(1).value === comment.body.match(re)[item]) {
-                            row.getCell(2).value += 1;
-                            row.commit();
-                            written = true;
-                        }
-                    });
-                    if (!written) {
-                        let row = worksheet.getRow(worksheet.rowCount + 1);
-                        row.getCell(1).value = comment.body.match(re)[item];
-                        row.getCell(2).value = 1;
+    if (comment.body.includes('$') && comment.body.match(re) !== null) {
+        for (const item in comment.body.match(re)) {
+            workbook.xlsx.readFile('tickers.xlsx').then(() => {
+                const worksheet = workbook.getWorksheet(1);
+                let written;
+                worksheet.eachRow({ includeEmpty: true }, (row) => {
+                    if (row.getCell(1).value === comment.body.match(re)[item] &&
+                        ignore.indexOf(comment.body.match(re)[item]) !== -1) {
+                        row.getCell(2).value += 1;
                         row.commit();
-                    };
-                    written = false;
-                    return workbook.xlsx.writeFile('tickers.xlsx')
-                }).then(() => console.log('Data Written'));
-            }
+                        written = true;
+                    }
+                });
+                if (!written && ignore.indexOf(comment.body.match(re)[item]) !== -1) {
+                    let row = worksheet.getRow(worksheet.rowCount + 1);
+                    row.getCell(1).value = comment.body.match(re)[item];
+                    row.getCell(2).value = 1;
+                    row.commit();
+                }
+                written = false;
+                return workbook.xlsx.writeFile('tickers.xlsx')
+            }).then(() => console.log('Data Written'));
         }
     }
 }
@@ -66,7 +64,20 @@ const excelCheck = () => {
 
 const tickerCheck = () => {
     const re = /\$[A-Z]{1,4}/g;
-    const ignore = ['$ANUS', '$ROPE', '$G', '$J', '$M', '$P', '$U'];
+    const ignore = [
+        '$ANUS',
+        '$ROPE',
+        '$G',
+        '$J',
+        '$M',
+        '$P',
+        '$U',
+        '$FOMO',
+        '$APE',
+        '$DICK',
+        '$POOP',
+        '$COVD'
+    ];
 
     excelCheck();
 
