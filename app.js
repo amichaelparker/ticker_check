@@ -23,17 +23,20 @@ const writeToExcel = (comment, re) => {
         .readFile("tickers.xlsx")
         .then(() => {
           const worksheet = workbook.getWorksheet(1);
+          let written = false;
           worksheet.eachRow({ includeEmpty: true }, (row) => {
             if (row.getCell(1).value === comment.body.match(re)[item]) {
               row.getCell(2).value += 1;
               row.commit();
-            } else if (row.number === worksheet.rowCount) {
-              let lastRow = worksheet.getRow(worksheet.rowCount + 1);
-              lastRow.getCell(1).value = comment.body.match(re)[item];
-              lastRow.getCell(2).value = 1;
-              lastRow.commit();
+              written = true;
             }
-          });
+          })
+          if (!written) {
+            let lastRow = worksheet.getRow(worksheet.rowCount + 1);
+            lastRow.getCell(1).value = comment.body.match(re)[item];
+            lastRow.getCell(2).value = 1;
+            lastRow.commit();
+          }
           return workbook.xlsx.writeFile("tickers.xlsx");
         })
         .then(() => console.log("Data Written"));
