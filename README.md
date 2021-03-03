@@ -10,10 +10,10 @@ REDDIT_USER=UsernameForAppAccount
 REDDIT_PASS=PasswordForAppAccount
 ```
 
-Run with `node app.js`. You can add more subreddits by copy/pasting this code (and editing appropriately):
+Run with `babel-node app.js`. You can add more subreddits by copy/pasting this code (and editing appropriately):
 
 ```javascript
-const streamOne = new CommentStream(r, { subreddit: "wallstreetbets", results: 25 });
+const streamOne = new CommentStream(r, { subreddit: "wallstreetbets", results: 25, pollTime: 3000 });
 streamOne.on("item", comment => {
     writeToExcel(comment, re, ignore);
 })
