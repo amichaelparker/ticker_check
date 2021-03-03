@@ -15,7 +15,7 @@ const client = new Snoowrap({
   password: process.env.REDDIT_PASS,
 });
 
-async function addRow(comment, re, item) {
+const addRow = (comment, re, item) => {
   const worksheet = workbook.getWorksheet(1);
   let written = false;
   worksheet.eachRow({ includeEmpty: true }, (row) => {
@@ -41,8 +41,8 @@ const writeToExcel = (comment, re) => {
       if (!tickers.includes(comment.body.match(re)[item])) return;
       workbook.xlsx
         .readFile("tickers.xlsx")
-        .then(async () => {
-          await addRow(comment, re, item)
+        .then(() => {
+          addRow(comment, re, item);
         })
         .then(() => console.log("Data Written"));
     }
