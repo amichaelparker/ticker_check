@@ -30,13 +30,14 @@ const writeToExcel = (comment, re) => {
               row.commit();
               written = true;
             }
-          })
+          });
           if (!written) {
             let lastRow = worksheet.getRow(worksheet.rowCount + 1);
             lastRow.getCell(1).value = comment.body.match(re)[item];
             lastRow.getCell(2).value = 1;
             lastRow.commit();
           }
+          written = false;
           return workbook.xlsx.writeFile("tickers.xlsx");
         })
         .then(() => console.log("Data Written"));
